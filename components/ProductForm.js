@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Spinner from "./Spinner";
@@ -10,18 +10,27 @@ export default function ProductForm ({
     description:existingDescription, 
     price:existingPrice,
     images:existingImages,
+    category:existingCategory
 }){    
     const [title, setTitle] = useState(existingTitle || "");
     const [description, setDescription] = useState(existingDescription || "");
     const [price, setPrice] = useState(existingPrice || "");
     const [images, setImages] = useState(existingImages || []);
+    const [category, setCategory] = useState(existingCategory || "");
     const [isUploading, setIsUploading] = useState(false);
     const [goToProducts, setGoToProducts] = useState(false);
+    const [categories, setCategories] = useState([]);
     const router = useRouter();
+
+    useEffect(() => {
+        axios.get("/api/categories").then(result => {
+            setCategories(result.data);
+        })
+    }, [])
 
     async function saveProduct(e){
         e.preventDefault();
-        const data = {title, description, price, images};
+        const data = {title, description, price, images, category};
         if(_id){
             // update
             await axios.put("/api/products", {...data, _id});
@@ -61,15 +70,25 @@ export default function ProductForm ({
         <div>
             <form onSubmit = {saveProduct}>
 
-                <label>Product name</label>
+                <label>Nombre del Producto:</label>
                 <input 
                     type="text" 
                     placeholder="Product name" 
                     value={title} 
                     onChange={e => setTitle(e.target.value)}/>
+                
+                <label>Categoria:</label>
+                <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}>
+                    <option value="">Uncategorized</option>
+                    {categories.length > 0 && categories.map(category => (
+                        <option value={category._id}>{category.name}</option>
+                    ))}
+                </select>
 
                 <label>
-                    Photos
+                    Fotos:
                 </label>
                 <div className="mb-2 flex flex-wrap gap-1">
                     <ReactSortable 
@@ -101,13 +120,13 @@ export default function ProductForm ({
                     </label>
                 </div>
 
-                <label>Description</label>
+                <label>Descripción: </label>
                 <textarea 
                     value={description} 
                     placeholder="Description" 
                     onChange={e => setDescription(e.target.value)}></textarea>
 
-                <label>Price</label>
+                <label>Precio: </label>
                 <input 
                     type="number" 
                     placeholder="Price" 
