@@ -76,7 +76,7 @@ export default function ProductForm ({
     }
 
     const propertiesToFill = [];
-    if(categories.length > 0 && category){
+    if(categories?.length > 0 && category){
         let catInfo = categories.find(({_id}) => _id === category);
         propertiesToFill.push(...catInfo.properties);
         while(catInfo?.parent?._id){
@@ -111,7 +111,7 @@ export default function ProductForm ({
                     onChange={(e) => setCategory(e.target.value)}>
                     <option value="">Uncategorized</option>
                     {categories.length > 0 && categories.map(category => (
-                        <option value={category._id}>{category.name}</option>
+                        <option key={category._id} value={category._id}>{category.name}</option>
                     ))}
                 </select>
                 
