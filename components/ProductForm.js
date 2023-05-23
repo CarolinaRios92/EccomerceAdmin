@@ -10,7 +10,8 @@ export default function ProductForm ({
     description:existingDescription, 
     price:existingPrice,
     images:existingImages,
-    category:existingCategory
+    category:existingCategory,
+    properties: existingProperties,
 }){    
     const [title, setTitle] = useState(existingTitle || "");
     const [description, setDescription] = useState(existingDescription || "");
@@ -20,6 +21,7 @@ export default function ProductForm ({
     const [isUploading, setIsUploading] = useState(false);
     const [goToProducts, setGoToProducts] = useState(false);
     const [categories, setCategories] = useState([]);
+    const [productProperties, setProductProperties] = useState(existingProperties || {});
     const router = useRouter();
 
     useEffect(() => {
@@ -30,7 +32,14 @@ export default function ProductForm ({
 
     async function saveProduct(e){
         e.preventDefault();
-        const data = {title, description, price, images, category};
+        const data = {
+                    title, 
+                    description, 
+                    price, 
+                    images, 
+                    category, 
+                    properties:productProperties
+        };
         if(_id){
             // update
             await axios.put("/api/products", {...data, _id});
@@ -66,6 +75,25 @@ export default function ProductForm ({
         setImages(images);
     }
 
+    const propertiesToFill = [];
+    if(categories.length > 0 && category){
+        let catInfo = categories.find(({_id}) => _id === category);
+        propertiesToFill.push(...catInfo.properties);
+        while(catInfo?.parent?._id){
+            const parentCat = categories.find(({_id}) => _id === catInfo?.parent?._id);
+            propertiesToFill.push(...parentCat.properties);
+            catInfo = parentCat;
+        }
+    }
+
+    function setProductProp(propName, value){
+        setProductProperties(prev => {
+            const newProductProps = {...prev};
+            newProductProps[propName] = value;
+            return newProductProps;
+        })
+    }
+
     return (
         <div>
             <form onSubmit = {saveProduct}>
@@ -86,6 +114,22 @@ export default function ProductForm ({
                         <option value={category._id}>{category.name}</option>
                     ))}
                 </select>
+                
+                {propertiesToFill.length > 0 && propertiesToFill.map(property => (
+                    <div className="flex gap-1">
+                        <div>
+                            {property.name}
+                        </div>
+                        <select
+                            value={productProperties[property.name]} 
+                            onChange={(e) => setProductProp(property.name, e.target.value)}>
+                            {property.values.map((value => (
+                                <option value={value}>{value}</option>
+                            )))}
+                        </select>
+                    </div>
+                ))
+                }
 
                 <label>
                     Fotos:
