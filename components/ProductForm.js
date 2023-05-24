@@ -116,17 +116,19 @@ export default function ProductForm ({
                 </select>
                 
                 {propertiesToFill.length > 0 && propertiesToFill.map(property => (
-                    <div className="flex gap-1">
+                    <div className="">
+                        <label>
+                            {property.name[0].toUpperCase() + property.name.substring(1)}
+                        </label>
                         <div>
-                            {property.name}
-                        </div>
-                        <select
+                            <select
                             value={productProperties[property.name]} 
                             onChange={(e) => setProductProp(property.name, e.target.value)}>
                             {property.values.map((value => (
-                                <option value={value}>{value}</option>
-                            )))}
+                                <option className="capitalize" value={value}>{value}</option>
+                            )))} 
                         </select>
+                        </div>
                     </div>
                 ))
                 }
@@ -141,7 +143,7 @@ export default function ProductForm ({
                         className="flex flex-wrap gap-1">
                         
                         {!!images?.length && images.map(link => (
-                            <div className="h-24">
+                            <div className="h-24 bg-white p-2 shadow-sm rounded-sm border border-gray-200">
                                 <img src={link} className="rounded-lg"/>
                             </div>
                         ))}
@@ -153,12 +155,12 @@ export default function ProductForm ({
                             <Spinner />
                         </div>
                     )}
-                    <label className="w-24 h-24 cursor-pointer text-center text-gray-500 flex items-center justify-center text-sm gap-1 rounded-lg bg-gray-200">
+                    <label className="w-24 h-24 cursor-pointer text-center text-primary flex flex-col items-center justify-center text-sm gap-1 rounded-sm bg-white shadow-sm border border-primary">
                         <svg className="w-7 h-7" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                         <div>
-                            Upload
+                            Agregar imagen
                         </div>
                         <input type="file" className="hidden" onChange={(e) => uploadImages(e)}/>
                     </label>

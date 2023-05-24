@@ -16,11 +16,11 @@ input:focus, textarea:focus, select:focus{
 }
 
 h1{
-    @apply text-blue-900 mb-2 text-xl
+    @apply text-gray-800 mb-4 text-xl
 }
 
 label {
-    @apply text-blue-900;
+    @apply text-gray-600 text-sm;
 }
 
 .btn-primary{
@@ -40,7 +40,7 @@ table.basic tr td{
 }
 
 table.basic a {
-    @apply text-white px-4 py-1 rounded-sm inline-flex mx-1 items-center gap-1 bg-gray-700 text-sm py-1;
+    @apply px-4 py-1 rounded-sm inline-flex mx-1 items-center gap-1 text-sm py-1;
 }
 
 .btn-default, .btn-red {
@@ -48,9 +48,9 @@ table.basic a {
 }
 
 .btn-red {
-    @apply bg-red-800 text-white
+    @apply bg-red-200 text-red-600 px-4 py-1 rounded-sm shadow-sm;
 }
 
 .btn-default {
-    @apply bg-gray-500 text-white
+    @apply bg-gray-600 text-white px-4 py-1 rounded-sm shadow-sm;
 }
