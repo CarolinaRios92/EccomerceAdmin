@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import Spinner from "@/components/Spinner";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 export default function SettingsPage(){
     const [products, setProducts] = useState([]);
@@ -26,6 +27,11 @@ export default function SettingsPage(){
         await axios.put("/api/settings", {
             name: "featuredProductId",
             value: featuredProductId
+        }).then(() => {
+            Swal.fire({
+                title: "Cambio guardado",
+                icon: "success",
+            })
         })
     }
 
