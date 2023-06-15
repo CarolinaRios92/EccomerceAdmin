@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import Spinner from "@/components/Spinner";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -9,14 +10,17 @@ export default function Categories(){
     const [categories, setCategories] = useState([]);
     const [parentCategory, setParentCategory] = useState("");
     const [properties, setProperties] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         fetchCategories();
     }, [])
 
     function fetchCategories(){
+        setIsLoading(true);
         axios.get("/api/categories").then(result => {
             setCategories(result.data);
+            setIsLoading(false);
         })
     }
 
@@ -204,6 +208,15 @@ export default function Categories(){
                     </tr>
                 </thead>
                 <tbody>
+                    {isLoading && (
+                        <tr>
+                            <td colSpan={3}>
+                                <div className="py-6">
+                                    <Spinner fullWidth={true} />
+                                </div>
+                            </td>
+                        </tr>
+                    )}
                     {categories.length > 0 && categories.map(category => (
                         <tr key={category._id}>
                             <td>{category.name}</td>
