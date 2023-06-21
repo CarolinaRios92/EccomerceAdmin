@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import Spinner from "@/components/Spinner";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import DeliveredOrder from "@/components/DeliveredOrder";
 
 export default function OrderPage(){
     const [orders, setOrders] = useState([]);
@@ -25,6 +26,7 @@ export default function OrderPage(){
                         <th>Pago</th>
                         <th>Comprador</th>
                         <th>Productos</th>
+                        <th>Entregado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,7 +40,7 @@ export default function OrderPage(){
                         </tr>
                     )}
                     {orders.length > 0 && orders.map(order => (
-                        <tr>
+                        <tr key={order._id}>
                             <td>
                                 {(new Date(order.createdAt)).toLocaleString()}
                             </td>
@@ -52,10 +54,13 @@ export default function OrderPage(){
                             </td>
                             <td>
                                 {order.line_items.map(product => (
-                                    <>
+                                    <div key={product._id}>
                                         {product.title} x {product.quantity}<br />
-                                    </>
+                                    </div>
                                 ))}
+                            </td>
+                            <td>
+                                <DeliveredOrder delivered={order.delivered} orderId={order._id}/>
                             </td>
                         </tr>
                     ))}

@@ -41,7 +41,7 @@ export default function HomeStats(){
 
     return(
         <div>
-            <h2>Ordenes</h2>
+            <h1 className="pt-5 text-center font-semibold">Ordenes</h1>
             <div className="tiles-grid">
                 <div className="tile">
                     <h3 className="tile-header">
@@ -66,7 +66,7 @@ export default function HomeStats(){
                 </div>
             </div>
 
-            <h2>Ganacias</h2>
+            <h1 className="pt-5 text-center font-semibold">Ganacias</h1>
             <div className="tiles-grid">
                 <div className="tile">
                     <h3 className="tile-header">

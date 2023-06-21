@@ -18,15 +18,16 @@ export default function Products(){
 
     return (
         <Layout>
+            <h1>Productos</h1>
             <Link 
                 className="btn-primary"
                 href={"/products/new"}>
-                    Add New Products
+                    Agregar Nuevo Producto
             </Link>
-            <table className="basic mt-2">
+            <table className="basic mt-7">
                 <thead>
                     <tr>
-                        <td>Product Name</td>
+                        <td>Listado de Productos</td>
                         <td></td>
                     </tr>
                 </thead>
