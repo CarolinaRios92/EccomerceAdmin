@@ -12,17 +12,17 @@ export default function DeliveredOrder ({delivered, orderId}){
         )
     }
 
-    console.log(deliveredOrder);
-
     return (
-        <>
-            {deliveredOrder ? <>SI</> : <>NO</>}
+        <td className="text-center">  
+            <p className={deliveredOrder ? "text-green-600" : "text-red-600"}>
+                {deliveredOrder ? "SI" : "NO"}
+            </p>
             <button 
                 type="button"
                 className="btn-default text-sm mb-2 mt-1"
                 onClick={changeDelivered}>
                     Entregado
             </button>
-        </>
+        </td>
     )
 }
