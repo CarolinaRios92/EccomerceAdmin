@@ -12,18 +12,22 @@ export default function ProductForm ({
     images:existingImages,
     category:existingCategory,
     properties: existingProperties,
+    stock: existingStock
 }){    
     const [title, setTitle] = useState(existingTitle || "");
     const [description, setDescription] = useState(existingDescription || "");
     const [price, setPrice] = useState(existingPrice || "");
+    const [units, setUnits] = useState(0);
     const [images, setImages] = useState(existingImages || []);
     const [category, setCategory] = useState(existingCategory || "");
     const [categoriesLoading, setCategoriesLoading] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [goToProducts, setGoToProducts] = useState(false);
     const [categories, setCategories] = useState([]);
-    const [productProperties, setProductProperties] = useState(existingProperties || {});
+    const [productProperties, setProductProperties] = useState(existingProperties || null);
     const router = useRouter();
+
+    const [productProp, setProductProp] = useState([]);
 
     useEffect(() => {
         setCategoriesLoading(true);
@@ -35,6 +39,8 @@ export default function ProductForm ({
 
     async function saveProduct(e){
         e.preventDefault();
+
+        
         const data = {
                     title, 
                     description, 
@@ -56,6 +62,40 @@ export default function ProductForm ({
     if(goToProducts){
         router.push("/products")
     }
+
+    function handleDeleteProperty(property, e){
+        e.preventDefault()
+        delete units[property]
+        setUnits({...units});
+    }
+
+    function addStock(e){
+        e.preventDefault()
+        
+        const propName = productProp[0];
+        const propValue = productProp[1];
+        const propUnits = productProp[2];
+
+        setUnits(prev => {
+            const newUnits = {...prev};
+            newUnits[propValue] = propUnits;
+            return newUnits;
+        });
+
+        setProductProperties(prev => {
+            const newProductProps = {...prev};
+            if(productProperties === null){
+                newProductProps[propName] = {};
+                newProductProps[propName][propValue] = propUnits;
+            }
+            newProductProps[propName][propValue] = propUnits;
+            return newProductProps;
+         });
+
+        setProductProp([]);
+    }
+
+    console.log(productProperties);
 
     async function uploadImages(e){
         const files = e.target?.files;
@@ -88,13 +128,13 @@ export default function ProductForm ({
             catInfo = parentCat;
         }
     }
+    
+    const properySelectProducts = [];
+    const unitsPropertySelect = [];
 
-    function setProductProp(propName, value){
-        setProductProperties(prev => {
-            const newProductProps = {...prev};
-            newProductProps[propName] = value;
-            return newProductProps;
-        })
+    for(const unit in units) {
+        properySelectProducts.push(unit);
+        unitsPropertySelect.push(units[unit])
     }
 
     return (
@@ -122,23 +162,70 @@ export default function ProductForm ({
                     <Spinner />
                 )}
 
-                {propertiesToFill.length > 0 && propertiesToFill.map(property => (
-                    <div className="">
-                        <label>
-                            {property.name[0].toUpperCase() + property.name.substring(1)}
-                        </label>
-                        <div>
-                            <select
-                            value={productProperties[property.name]} 
-                            onChange={(e) => setProductProp(property.name, e.target.value)}>
-                            {property.values.map((value => (
-                                <option className="capitalize" value={value}>{value}</option>
-                            )))} 
-                        </select>
+                {propertiesToFill.length > 0 && propertiesToFill.map((property, index) => (
+                    <form
+                        key={index} 
+                        className="flex flex-row gap-3">
+                        <div className="basis-2/4">
+                            <label>
+                                {property.name[0].toUpperCase() + property.name.substring(1)}
+                            </label>
+                            <div>
+                                <select
+                                    value={productProp[1] || "default"} 
+                                    required
+                                    defaultValue="default"
+                                    onChange={(e) => setProductProp([property.name, e.target.value])}>
+                                        <option 
+                                            disabled
+                                            value="default">Seleccionar</option>
+                                    {property.values.map((value => (
+                                        <option className="capitalize" value={value}>{value}</option>
+                                    )))} 
+                                </select>
+                            </div>
                         </div>
-                    </div>
+
+                        <div className="basis-1/4">   
+                            <label>Unidades</label>
+                            <input
+                                className="py-1.5"
+                                min="1"
+                                required
+                                type="number"
+                                value={productProp[2] || 0}
+                                placeholder="unidades"
+                                onChange={(e) => setProductProp(prev => [prev[0], prev[1] , e.target.value])}/>                 
+                        </div>
+
+                        <div className="flex h-fit items-end pt-7 basis-1/4">
+                            <button
+                                disabled={productProp.length < 3}
+                                className="btn-primary"
+                                onClick={addStock}>
+                                    Agregar
+                            </button>
+                        </div>
+
+                    </form>
                 ))
                 }
+
+                <div className="flex gap-2">
+                    {properySelectProducts.length > 0 && unitsPropertySelect.length > 0 && properySelectProducts.map((property, index) => (
+                        <div key={property}>
+                            <div className="bg-cyan-500 p-2 rounded-sm text-sm text-white">
+                                {`${property} ${unitsPropertySelect[index]} unid`}
+                                <button
+                                    className="text-black cursor-pointer pl-2 font-semibold"
+                                    onClick={(e) => handleDeleteProperty(property, e)}>
+                                    X
+                                </button>
+                            </div>
+                        </div>
+                ))}
+                </div>
+
 
                 <label>
                     Fotos:
@@ -186,7 +273,7 @@ export default function ProductForm ({
                     value={price} 
                     onChange={e => setPrice(e.target.value)}/>
 
-                <button type="submit" className="btn-primary">Save</button>
+                <button type="submit" className="btn-primary">Guardar</button>
             </form>
         </div>
     )
