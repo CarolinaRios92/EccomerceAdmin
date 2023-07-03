@@ -12,12 +12,10 @@ export default function ProductForm ({
     images:existingImages,
     category:existingCategory,
     properties: existingProperties,
-    stock: existingStock
 }){    
     const [title, setTitle] = useState(existingTitle || "");
     const [description, setDescription] = useState(existingDescription || "");
     const [price, setPrice] = useState(existingPrice || "");
-    const [units, setUnits] = useState(0);
     const [images, setImages] = useState(existingImages || []);
     const [category, setCategory] = useState(existingCategory || "");
     const [categoriesLoading, setCategoriesLoading] = useState(false);
@@ -35,11 +33,35 @@ export default function ProductForm ({
             setCategories(result.data);
             setCategoriesLoading(false);
         })
-    }, [])
+    }, []);
+
+    const propertiesToFill = [];
+
+    var nameProperty = "";
+
+    if(categories?.length > 0 && category){
+        let catInfo = categories.find(({_id}) => _id === category);
+        propertiesToFill.push(...catInfo.properties);
+        nameProperty = catInfo.properties[0].name;
+        while(catInfo?.parent?._id){
+            const parentCat = categories.find(({_id}) => _id === catInfo?.parent?._id);
+            propertiesToFill.push(...parentCat.properties);
+            catInfo = parentCat;
+        };
+    }
+    
+    const properySelectProducts = [];
+    const unitsPropertySelect = [];
+
+    if(productProperties !== null){
+        for(const property in productProperties[nameProperty]){
+            properySelectProducts.push(property);
+            unitsPropertySelect.push(productProperties[nameProperty][property])
+        }
+    } 
 
     async function saveProduct(e){
         e.preventDefault();
-
         
         const data = {
                     title, 
@@ -65,37 +87,33 @@ export default function ProductForm ({
 
     function handleDeleteProperty(property, e){
         e.preventDefault()
-        delete units[property]
-        setUnits({...units});
+        delete productProperties[nameProperty][property]
+        setProductProperties({...productProperties});
     }
 
     function addStock(e){
-        e.preventDefault()
+        e.preventDefault();
         
         const propName = productProp[0];
         const propValue = productProp[1];
         const propUnits = productProp[2];
 
-        setUnits(prev => {
-            const newUnits = {...prev};
-            newUnits[propValue] = propUnits;
-            return newUnits;
-        });
-
-        setProductProperties(prev => {
-            const newProductProps = {...prev};
-            if(productProperties === null){
-                newProductProps[propName] = {};
+        if(productProperties !== null && productProperties[propName][propValue] !== undefined){
+            alert("Ya tenes ese producto")
+            return;
+        } 
+            setProductProperties(prev => {
+                const newProductProps = {...prev};
+                if(productProperties === null){
+                    newProductProps[propName] = {};
+                    newProductProps[propName][propValue] = propUnits;
+                }
                 newProductProps[propName][propValue] = propUnits;
-            }
-            newProductProps[propName][propValue] = propUnits;
-            return newProductProps;
-         });
+                return newProductProps;
+            });
 
-        setProductProp([]);
+            setProductProp([]);
     }
-
-    console.log(productProperties);
 
     async function uploadImages(e){
         const files = e.target?.files;
@@ -116,25 +134,6 @@ export default function ProductForm ({
 
     function updateImagesOrder(images){
         setImages(images);
-    }
-
-    const propertiesToFill = [];
-    if(categories?.length > 0 && category){
-        let catInfo = categories.find(({_id}) => _id === category);
-        propertiesToFill.push(...catInfo.properties);
-        while(catInfo?.parent?._id){
-            const parentCat = categories.find(({_id}) => _id === catInfo?.parent?._id);
-            propertiesToFill.push(...parentCat.properties);
-            catInfo = parentCat;
-        }
-    }
-    
-    const properySelectProducts = [];
-    const unitsPropertySelect = [];
-
-    for(const unit in units) {
-        properySelectProducts.push(unit);
-        unitsPropertySelect.push(units[unit])
     }
 
     return (

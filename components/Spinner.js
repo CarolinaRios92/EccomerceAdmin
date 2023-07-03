@@ -3,7 +3,7 @@ import { PulseLoader } from "react-spinners";
 export default function Spinner({fullWidth}){
     if(fullWidth){
         return (
-            <div className="w-full flex justify-center">
+            <div className="w-full flex justify-center pt-10">
                 <PulseLoader color={"#1E3A8A"} speedMultiplier={2}/> 
             </div>
         )

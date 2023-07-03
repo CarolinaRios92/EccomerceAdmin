@@ -2,18 +2,22 @@ import Layout from "@/components/Layout";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Spinner from "@/components/Spinner";
 
 export default function DeleteProductPage(){
     const router = useRouter();
     const [productInfo, setProductInfo] = useState();
+    const [titleProductLoading, setTitleProductLoading] = useState(false);
     const {id} = router.query;
 
     useEffect(() => {
         if(!id){
             return;
         }
+        setTitleProductLoading(true);
         axios.get("/api/products?id="+id).then(response => {
             setProductInfo(response.data);
+            setTitleProductLoading(false);
         })
     }, [id]);
 
@@ -28,20 +32,26 @@ export default function DeleteProductPage(){
 
 return (
     <Layout>
-        <h1 className="text-center">Do you really want to delete "{productInfo?.title}"?</h1>
-        <div className="flex gap-2 justify-center">
-            <button 
-                className="btn-red"
-                onClick={deleteProduct}>
-                    Yes
-            </button>
-            <button 
-                className="btn-default" 
-                onClick={goBack}>
-                No
-            </button>
-        </div>
-        
+        {titleProductLoading && (
+                    <Spinner fullWidth={true}/>
+        )}
+        {!titleProductLoading && (
+            <div>
+                <h1 className="text-center">Do you really want to delete "{productInfo?.title}"?</h1>
+                <div className="flex gap-2 justify-center">
+                    <button 
+                        className="btn-red"
+                        onClick={deleteProduct}>
+                            Yes
+                    </button>
+                    <button 
+                        className="btn-default" 
+                        onClick={goBack}>
+                        No
+                    </button>
+                </div>
+            </div>
+        )}
     </Layout>
 )
 }
