@@ -37,17 +37,17 @@ return (
         )}
         {!titleProductLoading && (
             <div>
-                <h1 className="text-center">Do you really want to delete "{productInfo?.title}"?</h1>
+                <h1 className="text-center">Esta seguro que quiere eliminar el producto "{productInfo?.title}"?</h1>
                 <div className="flex gap-2 justify-center">
                     <button 
                         className="btn-red"
                         onClick={deleteProduct}>
-                            Yes
+                            Si
                     </button>
                     <button 
                         className="btn-default" 
                         onClick={goBack}>
-                        No
+                            No
                     </button>
                 </div>
             </div>

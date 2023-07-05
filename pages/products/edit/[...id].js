@@ -24,7 +24,7 @@ export default function EditProductPage(){
 
     return (
         <Layout>
-            <h1>Edit Product</h1>
+            <h1>Editar Producto</h1>
             {isLoading && (
                 <Spinner fullWidth={true} />
             )}

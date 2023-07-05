@@ -193,7 +193,7 @@ export default function Categories(){
                     <button 
                         type="submit" 
                         className="btn-primary py-1">
-                            Save
+                            Guardar
                     </button>
                 </div>
             </form>
