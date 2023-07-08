@@ -178,9 +178,9 @@ export default function ProductForm ({
                                         <option 
                                             disabled
                                             value="default">Seleccionar</option>
-                                    {property.values.map((value => (
+                                    {property.values.map(value => (
                                         <option className="capitalize" value={value}>{value}</option>
-                                    )))} 
+                                    ))} 
                                 </select>
                             </div>
                         </div>

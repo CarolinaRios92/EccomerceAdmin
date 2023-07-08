@@ -8,7 +8,7 @@ export default function SettingsPage(){
     const [products, setProducts] = useState([]);
     const [productsLoading, setProductsLoading] = useState(false);
     const [featuredLoading, setFeaturedLoading] = useState(false);
-    const [featuredProductId, setFeaturedProductId] = useState("")
+    const [featuredProductId, setFeaturedProductId] = useState("");
 
     useEffect(() => {
         setProductsLoading(true);
