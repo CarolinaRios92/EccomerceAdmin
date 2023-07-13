@@ -136,6 +136,12 @@ export default function ProductForm ({
         setImages(images);
     }
 
+    function deleteImage(e, value, index){
+        e.preventDefault()
+        const newImages = images.filter((img) => images.indexOf(img) !== index);
+        setImages(newImages);
+    }
+
     return (
         <div>
             <form onSubmit = {saveProduct}>
@@ -235,9 +241,14 @@ export default function ProductForm ({
                         setList={updateImagesOrder}
                         className="flex flex-wrap gap-1">
                         
-                        {!!images?.length && images.map(link => (
-                            <div className="h-24 bg-white p-2 shadow-sm rounded-sm border border-gray-200">
+                        {!!images?.length && images.map((link, index) => (
+                            <div className="h-28 bg-white p-2 shadow-sm rounded-sm border border-gray-200 flex items-start gap-1">
                                 <img src={link} className="rounded-lg"/>
+                                <button
+                                    className="shadow-sm rounded-sm bg-gray-300 p-0.5 font-semibold text-xs"
+                                    onClick={(e) => deleteImage(e, link, index)}>
+                                        X
+                                    </button>
                             </div>
                         ))}
 
